@@ -24,24 +24,20 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       const formData = await req.formData();
       const file = formData.get("file") as File | null;
   
-      // Sprawdzenie, czy plik został przesłany
       if (!file) {
         return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
       }
   
-      // Sprawdzenie typu pliku (tylko obrazy)
       const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
       if (!allowedTypes.includes(file.type)) {
         return NextResponse.json({ error: "Invalid file type." }, { status: 400 });
       }
   
-      // Sprawdzenie rozmiaru pliku (maksymalnie 5 MB)
-      const maxSize = 5 * 1024 * 1024; // 5 MB
+      const maxSize = 5 * 1024 * 1024;
       if (file.size > maxSize) {
         return NextResponse.json({ error: "File size exceeds the 5MB limit." }, { status: 400 });
       }
   
-      // Przetwarzanie pliku
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
   
